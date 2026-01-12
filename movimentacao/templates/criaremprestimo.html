@@ -1,0 +1,23 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      -
+      EMPRESTIMO
+      {% endblock %}
+
+{% block body %}
+
+    
+        <form method="POST" class="popup">
+            <label for="nome" class="form-label">Nome do Cliente:</label>
+            <input type="text" class="form-control" id="nome" name="nome" value="{{clientes.nome}}">
+            <label for="valor" class="form-label">Valor a emprestar:</label>
+            <input type="text" class="form-control" id="valor" name="valor">
+            <label for="obs" class="form-label">Observação:</label>
+            <input type="text" class="form-control" id="obs" name="obs">
+            <button type="submit" class="btn btn-danger">EMPRESTAR</button>
+        </form>
+      </div>
+    </div>
+  </body>
+
+{% endblock %}

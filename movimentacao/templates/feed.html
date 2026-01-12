@@ -1,0 +1,31 @@
+{% extends "navbar.html" %}
+
+
+{% block body %}
+    <div class="container" style="top: 110px;position: relative; ">
+
+
+      <div class="conteudo" style="display: inline-flex;flex-direction: row-reverse;">
+        <div style="display: inline-flex; flex-wrap: wrap;">
+          {% for foto in fotos %}
+
+            <div style="padding: 10px; border: 2px solid; margin: 10px; ">
+                  {% if foto.categoria == 'video' %}
+                  <video width="200" height="150" controls="True" >  <source src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" type="video/mp4"></video>
+                    {% else %}
+                  <img width="200" height="150" src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" />
+                  {% endif %}
+                  <br>
+                  <div style="padding-top: 7px;">
+                  <button type="button" style="width: 30%;" class="btn btn-success"><ion-icon name="create-outline"></ion-icon></button>
+                  <a href='{{url_for("delete",id=foto.id)}}' class='btn btn-danger' onclick='return confirm("Voce tem certeza, que deseja excluir  {{ foto.nome }}?")' type="button" style="width: 30%;" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></a>
+                  <button type="button" style="width: 30%;" class="btn btn-primary"><ion-icon name="tv-outline"></ion-icon></button>
+                  </div>
+            </div>
+          {% endfor %}
+          </div>
+      </div>
+    </div>
+  </body>
+
+{% endblock %}

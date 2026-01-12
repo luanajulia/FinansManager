@@ -1,0 +1,32 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="add-outline"></ion-icon>
+      CRIAR VENDEDOR
+      {% endblock %}
+
+{% block body %}
+       {% block formulario %}
+
+        <form method="POST" class="popup">
+            {{ form.csrf_token }}
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control") }}
+            {{ form.nivel.label(class="form-label") }}
+            {{ form.nivel(class="form-control") }}
+            {{ form.senha.label(class="form-label") }}
+            {{ form.senha(class="form-control") }}
+            {{ form.confirmacao_senha.label(class="form-label") }}
+            {{ form.confirmacao_senha(class="form-control") }}
+            {{ form.botao_confirmacao(class="btn btn-primary") }}
+          </div>
+
+        </form>
+          {% endblock %}
+
+        </div>
+    </div>
+  </body>
+
+{% endblock %}

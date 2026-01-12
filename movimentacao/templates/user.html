@@ -1,0 +1,41 @@
+{% extends "navbar.html" %}
+{% block titulo %}
+Usuarios
+{% endblock %}
+{% block titlle %}
+<ion-icon name="person-outline"></ion-icon>
+USUARIO
+<a class="btn btn-primary" href="{{url_for("criar_conta")}}">+ ADCIONAR USUARIO</a>
+{% endblock %}
+{% block body %}
+    <div class="prim" style="top: 110px;position: relative; margin-left: 15%; margin-right: 10px;">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">NOME</th>
+            <th scope="col">EMAIL</th>
+            <th scope="col">NIVEL</th>
+            <th scope="col">EDITAR</th>
+            <th scope="col">DELETAR</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for user in usuarioss %}
+            <tr>
+                <th scope="row">{{user.id}}</th>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.nivel}}</td>
+                <td><a href="{{url_for("edit_user",id=user.id)}}" class="btn btn-success">EDITAR</a></td>
+                <td><a href="{{url_for("delete_user",id=user.id)}}" onclick='return confirm("Voce tem certeza, que deseja excluir  {{ user.username }}?")' class="btn btn-danger">DELETAR</a></td>
+
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+
+{% endblock %}

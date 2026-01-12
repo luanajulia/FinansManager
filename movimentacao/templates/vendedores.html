@@ -1,0 +1,33 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="PERSON-outline"></ion-icon>
+      VENDEDORES
+      {% endblock %}
+
+{% block body %}
+<a href="{{ url_for('criar_vendedor') }}" class="btn btn-success">CRIAR USUARIO</a>
+  
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">E-mail</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Clientes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in vendedores %}
+    <tr>
+      <th scope="row">{{ cliente.username }}</th>
+      <td>{{ cliente.email }}</td>
+      <td>{{ cliente.nivel }}</td>
+      <td><a href="{{ url_for('vendedor_cliente', id=cliente.id) }}" class="btn btn-success">CLIENTES</a></td>
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+  </body>
+
+{% endblock %}

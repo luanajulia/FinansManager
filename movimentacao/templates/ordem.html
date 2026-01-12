@@ -1,0 +1,42 @@
+{% extends "navbar.html" %}
+{% block titulo %}
+Ordem
+{% endblock %}
+{% block titlle %}
+<ion-icon name="ellipsis-vertical-outline"></ion-icon>
+ORDEM
+{% endblock %}
+
+{% block body %}
+    <div class="prim" style="top: 110px;position: relative; margin-left: 15%; margin-right: 10px;">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">USUARIO</th>
+            <th scope="col">TITULO</th>
+            <th scope="col">IMAGEM</th>
+            <th scope="col">ORDEM</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for foto in fotos %}
+            <tr>
+                <th scope="row">{{foto.id}}</th>
+                <td>{% for user in usuarioss %} {% if foto.id_usuario == user.id %}{{user.username}}{% endif %}{% endfor %}</td>
+                <td>{{foto.nome}}</td>
+                <td>{% if foto.categoria == 'video' %}
+                  <video width="50" height="50"  >  <source src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" type="video/mp4"></video>
+                  {% else %}
+                  <img width="50" height="50" src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" /></td>
+                  {%endif%}
+                <td><form method="post" action="{{url_for("edit_ordem", id=foto.id)}}" style="display: inline-flex"><input type="number" name="ordem" class="form-control" style="width: 30%; padding: 10px;" value="{{foto.ordem}}"><button type="submit" class="btn btn-success">Enviar</button></form></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+
+{% endblock %}

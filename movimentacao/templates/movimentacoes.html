@@ -1,0 +1,103 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="cash-outline"></ion-icon>
+      MOVIMENTACOES
+      {% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready(function() {
+        $('#data').select2();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+        $('#cliente').select2();
+    });
+  </script>
+  <div>
+<form method="post" action="{{url_for("movimentacao_pesquisa")}}">
+  <label for="cliente" class="form-label">CLIENTE</label>
+  <select type="text"  id="cliente" name="cliente"  >
+        {% if cliente %}
+        <option selected value="{{cliente.id}}">{{cliente.nome}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for cliente in clientes  %}
+            <option  value="{{cliente.id}}">{{cliente.nome}}</option>
+          {% endfor %}
+      </select>
+    <label for="data" class="form-label">DATA</label>
+    <select type="text"  id="data" name="data" >
+        {% if data %}
+        <option selected value="{{data}}">{{data}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for data in datas  %}
+            <option  value="{{data.data_movi}}">{{data.data_movi}}</option>
+          {% endfor %}
+      </select>
+    <button type="submit" class="btn btn-primary">PESQUISAR</button>
+</form>
+  </div>
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">CPF</th>
+      <th scope="col">Movimento</th>
+      <th scope="col">Ultimo Saldo</th>
+      <th scope="col">Saldo Atual</th>
+      <th scope="col">Atrasado</th>
+      <th scope="col">Lancador</th>
+      <th scope="col">Data Lancamento</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for mov_completa in movimentacoes_completas %}
+                {% set movimentacao, cliente, usuario = mov_completa %}
+                <tr>
+                    <th scope="row">{{ cliente.nome }}</th>
+                    <td>{{ cliente.cpf }}</td>
+                    <td>
+                        {% if movimentacao.valor_pago %}
+                            <span style="color: green;">+ {{ movimentacao.valor_pago }}</span>
+                        {% else %}
+                            <span style="color: red;">- {{ movimentacao.valor_emprestado }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ movimentacao.ultimo_saldo }}</td>
+                    <td>{{ cliente.saldo }}</td>
+                    <td>{% if movimentacao.atrasado == 'sim' %}<input class="form-check-input" type="checkbox" name="atrasado" value="nao" id="atrasado2" checked>{% endif %}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ movimentacao.data }}</td>
+
+                </tr>
+            {% endfor %}
+    
+  </tbody>
+</table>
+<table>
+
+</table>
+<table class="table">
+  <thead style="color: #fff;background-color: #212529;border-color: #32383e;">
+    <tr>
+      <th scope="col">Total de Saldo</th>
+      <th scope="col">Total de Recebimento</th>
+      <th scope="col">Total de Saida</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">{{total_saldo|first}}</th>
+      <td><span style="color: green;">{{total_recebido|first}}</span></td>
+      <td><span style="color: red;">{{total_saida|first}}</span></td>
+    </tr>
+    </tbody>
+</table>
+  </body>
+
+{% endblock %}

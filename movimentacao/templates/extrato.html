@@ -1,0 +1,47 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="cash-outline"></ion-icon>
+      MOVIMENTACOES
+      {% endblock %}
+
+{% block body %}
+
+  
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">CPF</th>
+      <th scope="col">Movimento</th>
+      <th scope="col">Ultimo Saldo</th>
+      <th scope="col">Saldo Atual</th>
+      <th scope="col">Lancador</th>
+      <th scope="col">Data Lancamento</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for mov_completa in movimentacoes_completas %}
+                {% set movimentacao, cliente, usuario = mov_completa %}
+                <tr>
+                    <th scope="row">{{ cliente.nome }}</th>
+                    <td>{{ cliente.cpf }}</td>
+                    <td>
+                        {% if movimentacao.valor_pago %}
+                            <span style="color: green;">+ {{ movimentacao.valor_pago }}</span>
+                        {% else %}
+                            <span style="color: red;">- {{ movimentacao.valor_emprestado }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ movimentacao.ultimo_saldo }}</td>
+                    <td>{{ cliente.saldo }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ movimentacao.data }}</td>
+
+                </tr>
+            {% endfor %}
+    
+  </tbody>
+</table>
+  </body>
+
+{% endblock %}

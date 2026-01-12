@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block titulo %}
+        Controle financeiro
+        {% endblock %}</title>
+  </head>
+
+{% block body %}
+  <body class="overflow-hidden">
+    <div class="container">
+      
+
+
+      <div class="container-popup">
+
+          {% block formulario %}
+
+        <form method="POST" class="popup">
+            {{ form.csrf_token }}
+          
+        <img src="{{ url_for('static', filename='fotos_site/LOGO.png') }}"  >
+
+          <div class="div-input">
+              {{ form.email.label(class="label") }}
+                {{ form.email(class="input") }}
+          </div>
+
+          <div class="div-input">
+            {{ form.senha.label(class="label") }}
+            {{ form.senha(class="input") }}
+          </div>
+
+          <div class="div-botao">
+              {{ form.botao_confirmacao(class="botao-login") }}
+          </div>
+          <a href="{{ url_for('criar_conta') }}" class="link-criarconta">Não tem uma conta? Crie aqui</a>
+
+        </form>
+          {% endblock %}
+
+      </div>
+    </div>
+  </body>
+{% endblock %}
+</html>
