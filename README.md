@@ -27,7 +27,7 @@ Siga estes passos para configurar o ambiente no seu computador:
 git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
 cd seu-repositorio
 
-### 2. Criar um Ambiente Virtual (Venv)
+## 1. Criar um Ambiente Virtual (Venv)
 
 Isso é importante para manter as bibliotecas do projeto isoladas:
 
