@@ -63,4 +63,5 @@ Plaintext
 └── requirements.txt # Lista de dependências
 ```
 👩‍💻 Autora
-Luana Julia Fullstack Developer
+
+## Luana Julia Fullstack Developer
