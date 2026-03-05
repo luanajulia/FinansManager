@@ -58,7 +58,7 @@ Plaintext
 ```bash
 ├── static/          # Arquivos CSS e Imagens
 ├── templates/       # Arquivos HTML (Jinja2)
-├── app.py           # Arquivo principal do Flask
+├── main.py           # Arquivo principal do Flask
 ├── database.db      # Banco de dados (se for SQLite)
 └── requirements.txt # Lista de dependências
 ```
