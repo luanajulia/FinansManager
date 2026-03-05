@@ -5,7 +5,7 @@ O **FinansManager** é uma aplicação web desenvolvida para o controle de movim
 ---
 
 ## 📸 Preview
-![Screenshot da Aplicação](./preview_FM.png)
+![Screenshot da Aplicação](./preview.png)
 
 ## ✨ Funcionalidades
 - [x] **Cadastro de Movimentações:** Registro detalhado de entradas e saídas.
