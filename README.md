@@ -26,14 +26,14 @@ Siga estes passos para configurar o ambiente no seu computador:
 ```bash
 git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
 cd seu-repositorio
-
-## 1. Criar um Ambiente Virtual (Venv)
+```
+### 2. Criar um Ambiente Virtual (Venv)
 
 Isso é importante para manter as bibliotecas do projeto isoladas:
 
 ```bash
 python -m venv venv
-
+```
 ### 3. Ativar o Ambiente Virtual
 Windows: venv\Scripts\activate
 
@@ -43,11 +43,12 @@ Linux/Mac: source venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
-
+```
 ### 5. Executar a aplicação
 
 ```bash
 python app.py
+```
 
 Acesse no seu navegador: http://127.0.0.1:5000
 
