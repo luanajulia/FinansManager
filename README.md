@@ -62,7 +62,7 @@ Plaintext
 ├── database.db      # Banco de dados (se for SQLite)
 └── requirements.txt # Lista de dependências
 ```
-👩‍💻 Autora
+## 👩‍💻 Autora
 
-## Luana Julia 
-**Fullstack Developer**
+**Luana Julia**
+Fullstack Developer
