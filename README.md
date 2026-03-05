@@ -53,13 +53,14 @@ python app.py
 Acesse no seu navegador: http://127.0.0.1:5000
 
 📂 Estrutura de Pastas
-Plaintext
 
+Plaintext
+```bash
 ├── static/          # Arquivos CSS e Imagens
 ├── templates/       # Arquivos HTML (Jinja2)
 ├── app.py           # Arquivo principal do Flask
 ├── database.db      # Banco de dados (se for SQLite)
 └── requirements.txt # Lista de dependências
-
+```
 👩‍💻 Autora
 Luana Julia Fullstack Developer
