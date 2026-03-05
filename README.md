@@ -24,8 +24,8 @@ Siga estes passos para configurar o ambiente no seu computador:
 
 ### 1. Clonar o repositório
 ```bash
-git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
-cd seu-repositorio
+git clone https://github.com/luanajulia/FinansManager.git
+cd movimentacao
 ```
 ### 2. Criar um Ambiente Virtual (Venv)
 
