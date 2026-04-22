@@ -1,0 +1,155 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="pie-chart-outline"></ion-icon>
+      GRAFICOS
+      {% endblock %}
+
+{% block body %}
+
+<style>
+.torta {
+  max-width: 800px;
+  max-height: 600px;
+}
+.linha {
+  margin: 40px;
+  max-width: 800px;
+  max-height: 600px;
+}
+.saldo {
+  max-width: 600px;
+  max-height: 400px;
+}
+</style>
+<div class="alert alert-secondary" role="alert" id="saldo" class="saldo">
+  {% for saldo in saldos %}
+    <p><strong>Quantidade de Saldos:</strong>: R$ {{ saldo.saldo }}</p>
+  {% endfor %}
+</div>
+<div style="display: inline-flex;justify-content: center;align-items: center;flex-wrap: wrap;flex-direction: column-reverse;">
+<div>
+    <h5>Quantidade de Contratos por Status</h5>
+
+    <canvas id="pie" class="torta"></canvas>
+  </div>       
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Udemology/chartjs-plugin-sorting@main/chartjs-plugin-sorting.js"></script>
+<script>
+let usuarios_data = {{ usuarios_data | tojson }};
+let labels_data = {{ depart | tojson }};
+const stackedBar = document.getElementById('pie');
+ 
+  new Chart(stackedBar , {
+    type: 'bar',
+    data: {
+      labels: labels_data,
+      datasets: [{
+        label: 'departamento',
+        data: usuarios_data,
+        backgroundColor: [
+            'rgb(13, 71, 161)',
+            'rgb(21, 101, 192)',
+            'rgb(25, 118, 210)',
+            'rgb(30, 136, 229)',
+            'rgb(33, 150, 243)',
+            'rgb(66, 165, 245)',
+            'rgb(100, 181, 246)',
+            'rgb(187, 222, 251)',
+            'rgb(179, 229, 252)',
+            'rgb(129, 212, 250)',
+            'rgb(79, 195, 247)',
+            'rgb(3, 169, 244)',
+            'rgb(3, 155, 229)',
+            'rgb(2, 136, 209)',
+            'rgb(2, 119, 189)',
+            'rgb(2, 119, 189)',
+            'rgb(1, 87, 155)'
+            ],
+            borderWidth: 1,
+            hoverBorderColor: "black",
+            hoverBorderWidth: 2,
+            pointHoverRadius: 5
+    }],
+      series: [{
+    dataSorting: {
+        enabled: true
+    },
+    data: usuarios_data
+}]
+          },
+      options: {
+        indexAxis: 'y',
+           title: {
+                  display: true,
+                      text: "Income Categories",
+                          fontSize: 20,
+          },
+              legend: {
+                  position: "right",
+                      labels: {
+                      fontColor: "gray"
+                  },
+                  display: true,
+          },
+
+          elements: {
+                hitRadius: 3,
+            }
+          
+       }})
+</script>
+
+<div>
+<h4 >Saldo por Cliente</h4>
+
+  <canvas id="linha" class="linha" ></canvas>
+</div>
+<script>
+let saldo_c = {{ saldo_c | tojson }};
+let cliente_labels = {{ cliente_s | tojson }};
+console.log('saldo_c:', saldo_c);
+console.log('cliente_labels:', cliente_labels);
+
+const ctx3 = document.getElementById('linha');
+  new Chart(ctx3, {
+    type: 'doughnut',
+         data: {
+          labels: cliente_labels,
+          datasets: [{
+          label: 'Saldo',
+          data: saldo_c,
+          backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(75, 192, 192)',
+          'rgb(255, 205, 86)',
+          'rgb(201, 203, 207)',
+          'rgb(54, 162, 235)'
+          ],
+          borderWidth: 1,
+          hoverBorderColor: "black",
+          hoverBorderWidth: 2,
+          pointHoverRadius: 5,
+        }],
+          },
+        options: {
+        title: {
+            display: true,
+            position: 'top',
+            text: 'Saldo por Cliente',
+            fontSize: 14
+        },
+            legend: {
+                position: "right",
+                    labels: {
+                    fontColor: "gray"
+                },
+                display: true,
+        },
+
+            elements: {
+                hitRadius: 3,
+            }
+        }})
+</script>
+</div>
+{% endblock %}

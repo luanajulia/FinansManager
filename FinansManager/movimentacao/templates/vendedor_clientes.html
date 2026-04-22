@@ -1,0 +1,45 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="person-circle-outline"></ion-icon>
+      CLIENTES VENDEDOR({{vendedor.username}})
+      {% endblock %}
+
+{% block body %}
+  
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Saldo</th>
+      <th scope="col">Contratos</th>
+      <th scope="col">Extrato</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in clientes %}
+    <tr>
+      <th scope="row">{{ cliente.nome }}</th>
+      <td>{{ cliente.saldo}}</td>      
+      <td><a href="{{ url_for('contratos') }}" class="btn btn-dark">CONTRATOS</a></td>
+      <td><a href="{{ url_for('extrato', id=cliente.id) }}" class="btn btn-primary">EXTRATO</a></td>
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+<table class="table">
+  <thead style="color: #fff;background-color: #212529;border-color: #32383e;">
+    <tr>
+      <th scope="col">Total de Saldo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">{{total_saldo|first}}</th>
+    </tr>
+    </tbody>
+</table>
+  </body>
+
+{% endblock %}

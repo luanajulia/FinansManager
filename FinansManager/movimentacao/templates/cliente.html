@@ -1,0 +1,66 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="people-outline"></ion-icon>
+      CLIENTES
+      {% endblock %}
+
+{% block body %}
+<a href="{{ url_for('criarcliente') }}" class="btn btn-success">CRIAR CLIENTES</a>
+  
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Observação</th>
+      <th scope="col">Ultimo Lancamento</th>
+      <th scope="col">Saldo</th>
+      <th scope="col">Responsavel</th>
+      <th scope="col">Contratos</th>
+      <th scope="col">Extrato</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in clientes %}
+    {% set cliente, usuario = cliente %}
+    <tr>
+      <th scope="row">{{ cliente.nome }}</th>
+      <td>
+         {% set ultima_movimentacao = movimentacao_map_obs.get(cliente.id) %}
+        {% if ultima_movimentacao %}
+          {{ ultima_movimentacao }}
+        {% else %}
+          Sem Lancamentos
+        {% endif %}
+      </td>
+      <td>
+      {% set ultima_movimentacao = movimentacao_map.get(cliente.id) %}
+        {% if ultima_movimentacao %}
+          {{ ultima_movimentacao }}
+        {% else %}
+          Sem Lancamentos
+        {% endif %}
+        </td>
+      <td>{{ cliente.saldo}}</td>      
+      <td>{{ usuario.username}}</td>
+      <td><a href="{{ url_for('contratos') }}" class="btn btn-dark">CONTRATOS</a></td>
+      <td><a href="{{ url_for('extrato', id=cliente.id) }}" class="btn btn-primary">EXTRATO</a></td>
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+<table class="table">
+  <thead style="color: #fff;background-color: #212529;border-color: #32383e;">
+    <tr>
+      <th scope="col">Total de Saldo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">{{total_saldo|first}}</th>
+    </tr>
+    </tbody>
+</table>
+  </body>
+
+{% endblock %}

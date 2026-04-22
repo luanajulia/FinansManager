@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vizualizacao</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        
+        .weather-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #ccc;
+            width: 15%; /* Reduz a largura do widget de clima */
+            min-width: 180px; /* Garante uma largura mínima para legibilidade */
+            max-width: 250px;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-left: 20px;
+            box-sizing: border-box;
+            flex-shrink: 0; /* Impede que ele encolha */
+        }
+        .weather-day {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+            width: 100%;
+        }
+        .weather-day:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .weather-day h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        .weather-day img {
+            width: 60px;
+            height: 60px;
+            margin: 5px 0;
+        }
+        .weather-day p {
+            font-size: 0.95rem;
+            margin: 3px 0;
+            color: #666;
+        }
+
+        /* --- Estilos para o Carrossel de Notícias RSS --- */
+        #noticiasCarousel {
+            width: 90%; /* Ocupa a maior parte da largura da página */
+            max-width: 100%; /* Mantém um limite razoável */
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 15px;
+        }
+
+        #noticiasCarousel .carousel-inner {
+            display: flex;
+            align-items: center;
+            min-height: 150px; /* Altura mínima para o carrossel de notícias */
+        }
+
+        #noticiasCarousel .carousel-item {
+            padding: 10px 20px;
+            text-align: center;
+            transition: transform 0.6s ease-in-out;
+            font-family: Arial, sans-serif;
+        }
+        #noticiasCarousel .carousel-item h5 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #212529;
+            line-height: 1.4;
+        }
+        #noticiasCarousel .carousel-item p {
+            font-size: 2rem;
+            color: #495057;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #noticiasCarousel .carousel-item a {
+            font-size: 0.9rem;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #noticiasCarousel .carousel-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsividade básica para telas menores */
+        @media (max-width: 768px) {
+            .main-content-wrapper {
+                flex-direction: column; /* Coloca carrossel e clima em colunas */
+                align-items: center;
+                padding: 10px;
+            }
+            #meuCarouselPrincipal {
+                width: 100%; /* Ocupa a largura total em telas pequenas */
+                max-height: 60vh; /* Limita a altura em telas pequenas */
+            }
+            #meuCarouselPrincipal .carousel-item img, 
+            #meuCarouselPrincipal .carousel-item video {
+                max-height: 55vh; /* Ajusta a altura máxima para o conteúdo do carrossel */
+            }
+            .weather-widget {
+                width: 90%; /* Ocupa quase a largura total em telas pequenas */
+                margin-left: 0;
+                margin-top: 20px;
+            }
+            #noticiasCarousel {
+                width: 100%; /* Ocupa a largura total em telas pequenas */
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-content-wrapper" style="display: inline-flex;">
+        <div id="meuCarouselPrincipal" class="carousel slide" data-bs-interval="false" data-bs-wrap="true">
+            <div class="carousel-inner" id="carouselInnerPrincipal">
+                
+{% for foto in fotos %}
+      {% if foto.categoria != 'video' %}
+      <div class="carousel-item active">
+        <img class="d-block w-100"  src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" alt="Exemplo de imagem">
+      </div>
+        {% endif %}
+
+    {% endfor %}
+    <div class="carousel-item">
+                    <video class="d-block w-100"  loop muted playsinline id="video1" src="../static/fotos_posts/TV Corporativa (3).mp4">
+                        Seu navegador não suporta vídeo.
+                    </video>
+                </div>
+      <!-- Outro slide de vídeo -->
+       {% for foto in fotos %}
+      {% if foto.categoria == 'video' %}
+      <div class="carousel-item">
+        <video class="d-block w-100" muted playsinline id="video2" src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}">
+          Seu navegador não suporta vídeo.
+        </video>
+      </div>
+      {% endif %}
+    {% endfor %}
+                
+            </div>
+        </div>
+<div>
+<div id="img">
+
+  <img style="padding: 10px;" src="{{ url_for('static', filename='fotos_site/logotipo_apema.png') }}" />
+  <br>
+</div>
+        <div class="weather-widget" id="weather">
+            </div>
+            
+    </div>
+    </div>
+
+    <div id="noticiasCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner" id="carouselInnerNoticias">
+            <div class="carousel-item active">
+                <h5>Carregando Notícias...</h5>
+                <p>Por favor, aguarde enquanto as últimas notícias são carregadas.</p>
+            </div>
+        </div>
+        
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Carrossel Principal (Vídeos e Imagens) ---
+            const carouselPrincipalEl = document.getElementById('meuCarouselPrincipal');
+            const carouselPrincipal = new bootstrap.Carousel(carouselPrincipalEl, {
+                interval: false, // Desabilita o auto-slide padrão
+                wrap: true       // Ativa o loop infinito
+            });
+
+            function onShowSlidePrincipal(slideEl) {
+                const video = slideEl.querySelector('video');
+                
+                if (video) {
+                    video.currentTime = 0;
+                    video.play();
+                    video.onended = () => carouselPrincipal.next();
+                } else {
+                    // Para slides de imagem, definir um tempo fixo (ex.: 7 segundos)
+                    setTimeout(() => carouselPrincipal.next(), 7000); 
+                }
+            }
+
+            carouselPrincipalEl.addEventListener('slid.bs.carousel', e => {
+                onShowSlidePrincipal(e.relatedTarget);
+            });
+
+            // Inicia o primeiro slide do carrossel principal
+            const firstSlidePrincipal = carouselPrincipalEl.querySelector('.carousel-item.active');
+            onShowSlidePrincipal(firstSlidePrincipal);
+
+            // --- Integração do Clima ---
+            const apiKey = "cd6334c9bc7a4b82b00130825252907"; 
+            const city = "São Bernardo do Campo";
+            const weatherUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&lang=pt`;
+
+            fetch(weatherUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById("weather");
+                    data.forecast.forecastday.forEach(day => {
+                        const date = new Date(day.date).toLocaleDateString('pt-BR', { weekday: 'long' });
+                        const temp = day.day.avgtemp_c;
+                        const condition = day.day.condition.text;
+                        const icon = day.day.condition.icon;
+
+                        const html = `
+                            <div class="weather-day">
+                                <h4>${date}</h4>
+                                <img src="https:${icon}" alt="${condition}" />
+                                <p>${temp}°C</p>
+                                <p>${condition}</p>
+                            </div>
+                        `;
+                        container.insertAdjacentHTML("beforeend", html);
+                    });
+                })
+                .catch(error => console.error("Erro ao buscar previsão do tempo:", error));
+
+            // --- Carrossel de Notícias RSS ---
+            const noticiasCarouselEl = document.getElementById('noticiasCarousel');
+            const carouselInnerNoticias = document.getElementById('carouselInnerNoticias');
+
+            // Instancia o carrossel de notícias. data-bs-interval já está no HTML.
+            const noticiasCarousel = new bootstrap.Carousel(noticiasCarouselEl, {
+                interval: 5000, // Passa a cada 5 segundos (você pode ajustar)
+                wrap: true      // Continua em loop
+            });
+
+            const rssUrl = "https://news.un.org/feed/subscribe/pt/news/all/rss.xml"; // Exemplo: G1 Notícias
+            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'ok' && data.items.length > 0) {
+                        // Limpa o item de placeholder antes de adicionar as notícias reais
+                        carouselInnerNoticias.innerHTML = ''; 
+                        let isFirst = true; // Para marcar o primeiro item como "active"
+
+                        data.items.forEach(item => {
+                            const el = document.createElement("div");
+                            el.className = `carousel-item${isFirst ? ' active' : ''}`;
+                            isFirst = false; // Após o primeiro, os próximos não são mais "active"
+
+                            // Limita a descrição para exibir apenas o necessário
+                            const description = item.description.length > 150 ? 
+                                                item.description.substring(0, 150) + '...' : 
+                                                item.description;
+
+                            el.innerHTML = `
+                                <h5>${item.title}</h5>
+                                <p>${description}</p>
+                                <a href="${item.link}" target="_blank">Leia mais</a>
+                            `;
+                            carouselInnerNoticias.appendChild(el);
+                        });
+                        // Recarrega o carrossel para que ele reconheça os novos itens
+                        noticiasCarousel.cycle(); 
+
+                    } else {
+                        console.warn("Nenhum item encontrado no feed RSS ou erro na API.");
+                        carouselInnerNoticias.innerHTML = `
+                            <div class="carousel-item active">
+                                <h5>Não foi possível carregar as notícias.</h5>
+                                <p>Por favor, tente novamente mais tarde.</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao carregar o feed RSS:", err);
+                    carouselInnerNoticias.innerHTML = `
+                        <div class="carousel-item active">
+                            <h5>Erro de conexão.</h5>
+                            <p>Verifique sua internet ou tente novamente.</p>
+                        </div>
+                    `;
+                });
+        });
+    </script>
+</body>
+</html>

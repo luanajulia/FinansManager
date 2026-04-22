@@ -1,0 +1,48 @@
+{% extends "homepage.html" %}
+
+{% block titulo %}
+Criar Conta
+{% endblock %}
+
+ {% block formulario %}
+
+        <form method="POST" class="popup">
+            {{ form.csrf_token }}
+          
+            <img style="width: 30%;" src="{{ url_for('static', filename='fotos_site/logotipo.png') }}"  >
+         
+
+
+          <div class="div-input">
+              {{ form.email.label(class="label") }}
+                {{ form.email(class="input") }}
+          </div>
+
+            <div class="div-input">
+              {{ form.username.label(class="label") }}
+                {{ form.username(class="input") }}
+          </div>
+
+          <div class="div-input">
+            {{ form.nivel.label(class="label") }}
+            {{ form.nivel(class="input") }}
+          </div>
+
+          <div class="div-input">
+            {{ form.senha.label(class="label") }}
+            {{ form.senha(class="input") }}
+          </div>
+
+          <div class="div-input">
+            {{ form.confirmacao_senha.label(class="label") }}
+            {{ form.confirmacao_senha(class="input") }}
+          </div>
+
+
+          <div class="div-botao">
+              {{ form.botao_confirmacao(class="botao-login") }}
+            <a href="{{ url_for('homepage') }}" class="link-criarconta">Já tem uma conta? Faça Login</a>
+          </div>
+
+        </form>
+          {% endblock %}

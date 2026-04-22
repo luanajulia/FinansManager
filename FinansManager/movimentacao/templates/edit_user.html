@@ -1,0 +1,37 @@
+{% extends "navbar.html" %}
+{% block titulo %}
+Editar conta
+{% endblock %}
+{% block titlle %}
+<ion-icon name="person-add-outline"></ion-icon>
+EDITAR CONTA
+<a class="btn btn-primary" href="{{url_for("users")}}">VOLTAR</a>
+{% endblock %}
+
+ {% block body %}
+<div class="prim" style="top: 110px;position: relative; margin-left: 15%; margin-right: 10px;">
+        <form method="POST" class="popup">
+          <div class="div-input">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" value="{{usuario.email}}" name="email" id="email">
+          </div>
+          <div class="div-input">
+               <label class="form-label" for="username">Nome</label>
+            <input class="form-control" value="{{usuario.username}}" name="username" id="username">
+          </div>
+           <div class="div-input">
+              <label class="form-label" for="nivel">Nivel</label>
+            <select id="inputState" class="form-select" name="nivel" id="nivel">
+                <option selected>{{usuario.nivel}}</option>
+                <option>Administrador</option>
+                <option>Televisao</option>
+            </select>
+          </div>
+          <br>
+          <div class="div-botao">
+              <button type="submit" class="btn btn-success">EDITAR</button>
+          </div>
+
+        </form>
+        </div>
+          {% endblock %}
