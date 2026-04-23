@@ -32,6 +32,7 @@ class FormCliente(FlaskForm):
     cpf = StringField("CPF", validators=[DataRequired()])
     telefone = StringField("Telefone:", validators=[DataRequired()])
     email = StringField("Email:", validators=[DataRequired()])
+    endereco = StringField("Endereço", validators=[DataRequired()])
     data_nascimento = StringField("Data Nascimento:", validators=[DataRequired()])
     botao_confirmacao = SubmitField("Cadastrar")
 

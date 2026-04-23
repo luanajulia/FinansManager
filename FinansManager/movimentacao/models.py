@@ -26,6 +26,7 @@ class Cliente(database.Model):
     telefone = database.Column(database.String, nullable=False)
     email = database.Column(database.String, nullable=False)
     data_nascimento = database.Column(database.String, nullable=False)
+    endereco = database.Column(database.String, nullable=False)
     usuario_insert = database.Column(database.String, nullable=False)
 
 class Movimentacao(database.Model):

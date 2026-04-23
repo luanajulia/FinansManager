@@ -67,6 +67,7 @@ def criarcliente():
                           cpf=form_criarcliente.cpf.data,
                           telefone=form_criarcliente.telefone.data,
                           email=form_criarcliente.email.data,
+                          endereco=form_criarcliente.endereco.data,
                           data_nascimento=form_criarcliente.data_nascimento.data, 
                           usuario_insert=current_user.id,
                           id_vendedor=request.form.get("vendedor"))
@@ -84,7 +85,6 @@ def criarcontrato():
         valor=int(request.form.get("valorTotal"))
         juros=int(request.form.get("porcentagem"))
         frequencia=int(request.form.get("divisor"))
-        datas_selecionadas = request.form.getlist('data[]')
         contrato = Contrato(data=datetime.now().strftime('%d/%m/%Y %H:%M'),
                             valor=(((juros/100)*valor)+valor),
                             saldo=(((juros/100)*valor)+valor),
@@ -94,7 +94,7 @@ def criarcontrato():
                             ultimo_insert="Sem movimentação",
                             id_cliente=request.form.get("cliente"),
                             parcelas=str(int((((juros/100)*valor)+valor))/frequencia),
-                            pagamento=str(datas_selecionadas))
+                            pagamento=request.form.get("frequencia"))
         database.session.add(contrato)
         database.session.commit()
         cursor.execute("UPDATE CLIENTE SET saldo = saldo-'"+str((((juros/100)*valor)+valor))+"' WHERE id = '"+request.form.get("cliente")+"'")
