@@ -1,9 +1,9 @@
 # criar as rotas do nosso site (os links)
 from flask import flash,  render_template, request, url_for, redirect, session
 from movimentacao import app, database, bcrypt
-from movimentacao.models import Cliente, Usuario, Movimentacao, database, Contrato
+from movimentacao.models import Cliente, Usuario, Movimentacao, database, Contrato, Pagamento
 from flask_login import login_required, login_user, logout_user, current_user
-from movimentacao.forms import FormLogin, FormCriarConta, FormCliente, FormContrato
+from movimentacao.forms import FormLogin, FormCriarConta, FormCliente, FormContrato, FormPagamentos
 from werkzeug.utils import secure_filename
 import os
 import sqlite3 as sql
@@ -40,6 +40,30 @@ def homepage():
             login_user(usuario)
             return redirect(url_for("clientes"))
     return render_template("homepage.html", form=form_login)
+
+@app.route("/criarpagamento", methods=["GET", "POST"])
+def criar_pagamento():
+    form_criarpagamento = FormPagamentos()
+    user = Usuario.query.get(int(current_user.id))
+    usuarios = Usuario.query.filter(Usuario.nivel == "Vendedor").all()
+    if form_criarpagamento.validate_on_submit():
+        valor=int(request.form.get("valorTotal"))
+        juros=int(request.form.get("porcentagem"))
+        parcelas=int(request.form.get("divisor"))
+        porcentagem_comissao=int(request.form.get("porcentagemComissao"))
+        
+        pagamento = Pagamento(valor_juros=int(((juros/100)*valor)+valor),
+                              valor=valor,
+                              juros=request.form.get("porcentagem"),
+                              parcelas=request.form.get("divisor"),
+                              result_parcelas=int((((juros/100)*valor)+valor) / parcelas),
+                              porcentagem_comissao=request.form.get("porcentagemComissao"),
+                              valor_comissao=int((porcentagem_comissao/100)*valor))
+
+        database.session.add(pagamento)
+        database.session.commit()
+        return redirect(url_for("pagamentos"))
+    return render_template("criarpagamentos.html", form=form_criarpagamento, usuarios=usuarios, user=user)
 
 @app.route("/criarconta", methods=["GET", "POST"])
 def criar_conta():
@@ -78,38 +102,41 @@ def criarcliente():
 
 @app.route("/criarcontrato", methods=["GET", "POST"])
 def criarcontrato():
+    pagamentos = database.session.query(Pagamento).all()
     form_criarcontrato = FormContrato()
     user = Usuario.query.get(int(current_user.id))
     usuarios = Cliente.query.order_by(Cliente.nome).all()
     if request.method == "POST":
-        valor=int(request.form.get("valorTotal"))
-        juros=int(request.form.get("porcentagem"))
-        frequencia=int(request.form.get("divisor"))
+        condioes = Pagamento.query.filter(Pagamento.id == request.form.get("condicao")).all()
+        valor=condioes[0].valor_juros
+        juros=condioes[0].juros
+        parcelas=condioes[0].result_parcelas
+        frequencia=condioes[0].parcelas
         contrato = Contrato(data=datetime.now().strftime('%d/%m/%Y %H:%M'),
-                            valor=(((juros/100)*valor)+valor),
-                            saldo=(((juros/100)*valor)+valor),
+                            valor=valor,
+                            saldo=juros,
                             juros=juros,
                             frequencia=frequencia,
                             status="Ativo",
                             ultimo_insert="Sem movimentação",
                             id_cliente=request.form.get("cliente"),
-                            parcelas=str(int((((juros/100)*valor)+valor))/frequencia),
+                            parcelas=parcelas,
                             pagamento=request.form.get("frequencia"))
         database.session.add(contrato)
         database.session.commit()
-        cursor.execute("UPDATE CLIENTE SET saldo = saldo-'"+str((((juros/100)*valor)+valor))+"' WHERE id = '"+request.form.get("cliente")+"'")
+        cursor.execute("UPDATE CLIENTE SET saldo = saldo-'"+str(valor)+"' WHERE id = '"+request.form.get("cliente")+"'")
         clientes = cursor.execute("SELECT * FROM CLIENTE where id = '"+request.form.get("cliente")+"'").fetchall()
         contrato=cursor.execute("SELECT * FROM CONTRATO where id_cliente = '"+request.form.get("cliente")+"' order by id desc limit 1").fetchall()
         for c in clientes:
             id_cliente = c[0]
             saldo = c[4]
-            valor_pago=(((juros/100)*valor)+valor)
+            valor_pago=valor
             for co in contrato:
                 id_contrato = co[0]
                 cursor.execute("INSERT INTO MOVIMENTACAO (id_cliente, data, valor_emprestado, usuario_insert, obs, ultimo_saldo, id_contrato) VALUES ('"+str(request.form.get("cliente"))+"', '"+datetime.now().strftime('%d/%m/%Y %H:%M')+"', '"+str(valor_pago)+"', '"+str(current_user.id)+"', 'Contrato Valor pego', '"+str(saldo)+"'-'"+str(valor_pago)+"', '"+str(id_contrato)+"')")
                 conn.commit()
                 return redirect(url_for("contratos"))
-    return render_template("criarcontrato.html", form=form_criarcontrato, usuarios=usuarios, user=user)
+    return render_template("criarcontrato.html", form=form_criarcontrato, usuarios=usuarios, user=user, pagamentos=pagamentos)
 
 @app.route("/criar_vendedor", methods=["GET", "POST"])
 def criar_vendedor():
@@ -183,6 +210,14 @@ def extrato(id):
     total_recebido = database.session.query(database.func.sum(Movimentacao.valor_pago)).filter(Movimentacao.id_cliente == id).first()
     total_saldo = database.session.query(database.func.sum(Cliente.saldo)).filter(Cliente.id == id).first()
     return render_template("extrato_cliente.html", movimentacoes_completas=movimentacoes, extr=extr, user=user, total_saida=total_saida,total_recebido=total_recebido, total_saldo=total_saldo)
+
+@app.route("/pagamentos")
+@login_required
+def pagamentos():
+    pag="pag"
+    user = Usuario.query.get(int(current_user.id))
+    pagamentos = database.session.query(Pagamento).all()
+    return render_template("pagamentos.html", pagamentos=pagamentos, pag=pag, user=user)
 
 @app.route("/clientes")
 @login_required

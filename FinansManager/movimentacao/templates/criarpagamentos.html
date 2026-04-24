@@ -1,0 +1,87 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="add-outline"></ion-icon>
+      CRIAR PAGAMENTO
+      {% endblock %}
+
+{% block body %}
+       {% block formulario %}
+
+        <form method="POST" class="popup">
+            {{ form.csrf_token }}
+            <label>Valor Total (R$):</label>
+            <input type="number" class="form-control" id="valorTotal" name="valorTotal" placeholder="Valor total" oninput="calcular(); atualizarComissoes()">
+            <br>
+            <label>Taxa de Juros Mensal (%):</label>
+            <input type="number" class="form-control"  id="porcentagem" name="porcentagem" min="0" max="100" placeholder="0-100" oninput="calcular()"> 
+            <br>
+            <p>Resultado com juros: <span id="resultado">0</span></p>
+            <label>Número de Parcelas:</label>
+            <input type="number" class="form-control" id="divisor" name="divisor" value="2" placeholder="Digite o divisor" oninput="realizarCalculo(); atualizarComissoes()">
+            <br>
+            <p>Resultado das Parcelas: <span id="resultadodois"></span></p>
+            <label>Porcentagem Comissão (%):</label>
+            <input type="number" class="form-control" id="porcentagemComissao" name="porcentagemComissao" min="0" max="100" placeholder="0-100" oninput="atualizarComissoes()">
+            <br>
+            <p>Resultado da Comissão: <span id="resultadoComissao">0</span></p>
+            {{ form.botao_confirmacao(class="btn btn-primary") }}
+          
+
+        </form>
+          {% endblock %}
+
+        </div>
+    </div>
+  </body>
+<script>
+  function calcular() {
+    const p = parseFloat(document.getElementById('porcentagem').value) || 0;
+    const v = parseFloat(document.getElementById('valorTotal').value) || 0;
+    const res = ((p / 100) * v) + v;
+    const inteiro = Math.round(res);
+    document.getElementById('resultado').innerText = inteiro;
+    return inteiro;
+  }
+  function realizarCalculo() {
+    const inputDivisor = document.getElementById('divisor').value;
+    const divisor = Number(inputDivisor);
+
+    const valorParaDividir = calcular();
+
+    if (divisor !== 0) {
+        const resultado = Math.round(valorParaDividir / divisor);
+        document.getElementById('resultadodois').innerText = resultado;
+        return resultado;
+    } else {
+        alert("Não é possível dividir por zero!");
+        return 0;
+    }
+  }
+
+  function comissao() {
+    const p = parseFloat(document.getElementById('porcentagemComissao').value) || 0;
+    const v = parseFloat(document.getElementById('valorTotal').value) || 0;
+    const res = (p / 100) * v;
+    const inteiro = Math.round(res);
+    document.getElementById('resultadoComissao').innerText = inteiro;
+    return inteiro;
+  }
+
+  function comissao_mensal() {
+    const p = parseFloat(document.getElementById('porcentagemComissao').value) || 0;
+    const v = parseFloat(document.getElementById('valorTotal').value) || 0;
+    const divisor = Number(document.getElementById('divisor').value) || 1;
+    const comissaoTotal = (p / 100) * v;
+    const mensal = divisor !== 0 ? comissaoTotal / divisor : 0;
+    const inteiro = Math.round(mensal);
+    document.getElementById('resultadoComissaomes').innerText = inteiro;
+    return inteiro;
+  }
+
+  function atualizarComissoes() {
+    comissao();
+    comissao_mensal();
+  }
+
+</script>
+{% endblock %}

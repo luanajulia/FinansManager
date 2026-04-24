@@ -53,3 +53,13 @@ class Contrato(database.Model):
     pagamento = database.Column(database.String)
     parcelas = database.Column(database.String)
     ultimo_insert = database.Column(database.String)
+
+class Pagamento(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    valor_juros = database.Column(database.String)
+    valor = database.Column(database.String)
+    juros = database.Column(database.String)
+    parcelas = database.Column(database.String)
+    result_parcelas = database.Column(database.String)
+    porcentagem_comissao = database.Column(database.String)
+    valor_comissao = database.Column(database.String)

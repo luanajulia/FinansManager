@@ -42,3 +42,10 @@ class FormContrato(FlaskForm):
     frequencia = StringField("Frequência:", validators=[DataRequired()])
     data = StringField("Data Início Contrato:", validators=[DataRequired()])
     botao_confirmacao = SubmitField("Criar Contrato")
+
+class FormPagamentos(FlaskForm):
+    valorTotal = StringField("Valor Total:", validators=[DataRequired()])
+    porcentagem = StringField("Taxa de Juros:", validators=[DataRequired()])
+    divisor = StringField("Número de Parcelas:", validators=[DataRequired()])
+    porcentagemComissao = StringField("Porcentagem Comissão:", validators=[DataRequired()])
+    botao_confirmacao = SubmitField("Criar Condicao de Pagamento")

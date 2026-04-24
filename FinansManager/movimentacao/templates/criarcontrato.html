@@ -32,20 +32,13 @@
               </select>
               
               <hr>
-            <label>Valor Total (R$):</label>
-            <input type="number" class="form-control" id="valorTotal" name="valorTotal" placeholder="Valor total" oninput="calcular()">
-            
-            
-            <label>Taxa de Juros Mensal (%):</label>
-            <input type="number" class="form-control"  id="porcentagem" name="porcentagem" min="0" max="100" placeholder="0-100" oninput="calcular()"> 
-            
-            <p>Resultado com juros: <span id="resultado">0</span></p>
-
-            <label>Número de Parcelas:</label>
-            <input type="number" id="divisor" name="divisor" value="2" placeholder="Digite o divisor" oninput="realizarCalculo()">
-            
-            <p>Resultado das Parcelas: <span id="resultadodois"></span></p>
-
+            <label for="frequencia" class="form-label">Condicao de pagamento:</label><br>
+              <select class="form-select" aria-label="Default select example" name="condicao" id="condicao">
+                <option selected>Selecionar Condição</option>
+                {% for pagamento in pagamentos %}
+                  <option  value="{{pagamento.id}}">Valor: R$ {{pagamento.valor }} | Valor C/Juros: {{ pagamento.valor_juros }} | Parcelas: {{ pagamento.parcelas }} x de R$ {{ pagamento.result_parcelas }}</option>
+                {% endfor %}
+              </select>
              
     
 
