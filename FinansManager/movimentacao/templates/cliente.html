@@ -5,8 +5,53 @@
       {% endblock %}
 
 {% block body %}
+
+  <script>
+    $(document).ready(function() {
+        $('#cliente').select2();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+        $('#vendedor').select2();
+    });
+  </script>
 <a href="{{ url_for('criarcliente') }}" class="btn btn-success">CRIAR CLIENTES</a>
-  
+  <form method="post" action="{{url_for("clientes_pesquisa")}}">
+  <div style="display: ruby-text;">
+  <div>
+  <label for="vendedor" class="form-label">VENDEDOR</label>
+  <br>
+  <select type="text"  id="vendedor" name="vendedor"  >
+        {% if vendedor %}
+        <option selected value="{{vendedor.id}}">{{vendedor.username}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for vendedor in vendedores  %}
+            <option  value="{{vendedor.id}}">{{vendedor.username}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      <div >
+    <label for="cliente" class="form-label">CLIENTE</label>
+    <br>
+    <select type="text"  id="cliente" name="cliente"  >
+        {% if cliente %}
+        <option selected value="{{cliente.id}}">{{cliente.nome}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for cliente in clientess  %}
+            <option  value="{{cliente.id}}">{{cliente.nome}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      
+
+    <button type="submit" class="btn btn-primary">PESQUISAR</button>
+    </div>
+</form>
        <table class="table">
   <thead>
     <tr>
@@ -17,6 +62,7 @@
       <th scope="col">Responsavel</th>
       <th scope="col">Contratos</th>
       <th scope="col">Extrato</th>
+      <th scope="col">Detalhes</th>
     </tr>
   </thead>
   <tbody>
@@ -24,13 +70,11 @@
     {% set cliente, usuario = cliente %}
     <tr>
       <th scope="row">{{ cliente.nome }}</th>
-      <td>
-         {% set ultima_movimentacao = movimentacao_map_obs.get(cliente.id) %}
-        {% if ultima_movimentacao %}
-          {{ ultima_movimentacao }}
-        {% else %}
-          Sem Lancamentos
-        {% endif %}
+      <td>{% if ultima_movimentacao %}
+            {{ ultima_movimentacao }}
+          {% else %}
+            Sem Lancamentos
+          {% endif %}
       </td>
       <td>
       {% set ultima_movimentacao = movimentacao_map.get(cliente.id) %}
@@ -44,6 +88,7 @@
       <td>{{ usuario.username}}</td>
       <td><a href="{{ url_for('contratos') }}" class="btn btn-dark">CONTRATOS</a></td>
       <td><a href="{{ url_for('extrato', id=cliente.id) }}" class="btn btn-primary">EXTRATO</a></td>
+      <td><a href="{{ url_for('cliente_vizualizar', id=cliente.id) }}" class="btn btn-success">VIZUALIZAR</a></td>
     </tr>
     {% endfor %}
     

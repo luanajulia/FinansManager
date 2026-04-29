@@ -1,0 +1,35 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="add-outline"></ion-icon>
+      CRIAR PAGAMENTO
+      {% endblock %}
+
+{% block body %}
+{% for usuario in usuarios %}
+        <form method="POST" class="popup">
+            
+            <label>Email:</label>
+            <input value="{{ usuario.email }}" type="email" class="form-control" id="email" name="email" placeholder="Email">
+            <br>
+            <label>Nome do Vendedor:</label>
+            <input value="{{ usuario.username }}" type="text" class="form-control" id="username" name="username" placeholder="Username" >
+            <br>
+            <label>Nível de Acesso:</label>
+            <select class="form-control" id="nivel" name="nivel">
+                <option value="vendedor" {% if usuario.nivel == 'Vendedor' %}selected{% endif %}>Vendedor</option>
+                <option value="admin" {% if usuario.nivel == 'Administrador' %}selected{% endif %}>Administrador</option>
+            </select>
+            <br>
+            <label>Senha:</label>
+            <input value="{{ usuario.senha }}" type="password" class="form-control" id="senha" name="senha" placeholder="Senha" >
+            
+            <button type="submit" class="btn btn-primary">EDITAR</button>
+{% endfor %}
+          
+
+        </form>
+        </div>
+    </div>
+  </body>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="document-outline"></ion-icon> 
+      CONTRATOS
+      {% endblock %}
+
+{% block body %}
+<a href="{{ url_for('criarcontrato') }}" class="btn btn-success">CRIAR CONTRATO</a>
+  
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome Cliente</th>
+      <th scope="col">Data Inicio Contrato</th>
+      <th scope="col">Valor</th>
+      <th scope="col">Ultimo Lancamento</th>
+      <th scope="col">Atual Divida</th>
+      <th scope="col">Status</th>
+      <th scope="col">Parcelas</th>
+      <th scope="col">Comissão</th>
+      <th scope="col">Parcela da Comissão</th>
+      <th scope="col">Dias do Pagamento</th>
+      <th scope="col">Entrada</th>
+      <th scope="col">Extrato</th>
+    </tr>
+  </thead>
+    {% for contrato in vendedores %}
+
+  <tbody>
+    
+      <td>{{ contrato.clientes }}</td>
+      <td>{{ contrato.data }}</td>
+      <td>{{ contrato.valor }}</td>
+      <td>{{ contrato.ultimo_insert }}</td>
+      <td>{{ contrato.saldo }}</td>
+      <td>{{ contrato.status }}</td>
+      <td>{{ contrato.frequencia }} x {{ contrato.parcelas }}</td>
+      <td>{{ contrato.valor_comissao }}</td>
+      <td>{{ contrato.divisao }}</td>
+      <td>{{ contrato.pagamento }}</td>    
+      <td>{% if contrato.status == "Ativo" %}<a href="{{ url_for('valor_pago', id_contrato=contrato.id) }}" class="btn btn-success">+ ENTRADA</a>{% endif %}</td>
+      <td><a href="{{ url_for('extrato', id=contrato.id_cliente) }}" class="btn btn-primary">EXTRATO</a></td>
+    </tr>
+    
+    
+  </tbody>
+  {% endfor %}
+</table>
+
+  </body>
+
+{% endblock %}

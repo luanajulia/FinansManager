@@ -5,8 +5,52 @@
       {% endblock %}
 
 {% block body %}
+<script>
+    $(document).ready(function() {
+        $('#username').select2();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+        $('#nivel').select2();
+    });
+  </script>
 <a href="{{ url_for('criar_vendedor') }}" class="btn btn-success">CRIAR USUARIO</a>
-  
+  <form method="post" action="{{url_for("vendedores_pesquisa")}}">
+  <div style="display: ruby-text;">
+  <div>
+  <label for="vendedor" class="form-label">VENDEDOR</label>
+  <br>
+  <select type="text"  id="username" name="username"  >
+        {% if vendedor %}
+        <option selected value="{{vendedor.id}}">{{vendedor.username}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for vendedor in vendedores  %}
+            <option  value="{{vendedor.id}}">{{vendedor.username}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      <div >
+    <label for="nivel" class="form-label">Nivel</label>
+    <br>
+    <select type="text"  id="nivel" name="nivel"  >
+        {% if nivel %}
+        <option selected value="{{nivel.nivel}}">{{nivel.nivel}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for nivel in niveis  %}
+            <option  value="{{nivel.nivel}}">{{nivel.nivel}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      
+
+    <button type="submit" class="btn btn-primary">PESQUISAR</button>
+    </div>
+</form>
        <table class="table">
   <thead>
     <tr>
@@ -14,6 +58,8 @@
       <th scope="col">E-mail</th>
       <th scope="col">Tipo</th>
       <th scope="col">Clientes</th>
+      <th scope="col">Editar</th>
+      <th scope="col">Visualizar</th>
     </tr>
   </thead>
   <tbody>
@@ -23,6 +69,8 @@
       <td>{{ cliente.email }}</td>
       <td>{{ cliente.nivel }}</td>
       <td><a href="{{ url_for('vendedor_cliente', id=cliente.id) }}" class="btn btn-success">CLIENTES</a></td>
+      <td><a href="{{ url_for('editar_vendedor', id=cliente.id) }}" class="btn btn-primary">EDITAR</a></td>
+      <td><a href="{{ url_for('vendedores_vizualizar', id=cliente.id) }}" class="btn btn-info">VISUALIZAR</a></td>
     </tr>
     {% endfor %}
     

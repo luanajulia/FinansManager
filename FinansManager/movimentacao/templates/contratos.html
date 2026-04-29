@@ -5,11 +5,75 @@
       {% endblock %}
 
 {% block body %}
+<script>
+    $(document).ready(function() {
+        $('#data').select2();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+        $('#cliente').select2();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+        $('#vendedor').select2();
+    });
+  </script>
 <a href="{{ url_for('criarcontrato') }}" class="btn btn-success">CRIAR CONTRATO</a>
-  
+<form method="post" action="{{url_for("contratos_pesquisa")}}">
+  <div style="display: ruby-text;">
+  <div>
+  <label for="vendedor" class="form-label">VENDEDOR</label>
+  <br>
+  <select type="text"  id="vendedor" name="vendedor"  >
+        {% if vendedor %}
+        <option selected value="{{vendedor.id}}">{{vendedor.username}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for vendedor in vendedores  %}
+            <option  value="{{vendedor.id}}">{{vendedor.username}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      <div >
+    <label for="cliente" class="form-label">CLIENTE</label>
+    <br>
+    <select type="text"  id="cliente" name="cliente"  >
+        {% if cliente %}
+        <option selected value="{{cliente.id}}">{{cliente.nome}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for cliente in clientes  %}
+            <option  value="{{cliente.id}}">{{cliente.nome}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      <div >
+    <label for="data" class="form-label">DATA</label>
+    <br>
+    <select type="text"  id="data" name="data" >
+        {% if data %}
+        <option selected value="{{data}}">{{data}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for data in datas  %}
+            <option  value="{{data.data_contrato}}">{{data.data_contrato}}</option>
+          {% endfor %}
+      </select>
+      </div>
+
+    <button type="submit" class="btn btn-primary">PESQUISAR</button>
+    </div>
+</form>
+
        <table class="table">
   <thead>
     <tr>
+      <th scope="col">Nome Vendedor</th>
       <th scope="col">Nome Cliente</th>
       <th scope="col">Data Inicio Contrato</th>
       <th scope="col">Valor</th>
@@ -26,11 +90,8 @@
 
   <tbody>
     
-      <td>{% for cliente in clientes %}
-        {% if cliente.id == contrato.id_cliente %}
-          {{ cliente.nome }}
-        {% endif %}
-      {% endfor %}</td>
+      <td>{{ contrato.vendedor }}</td>
+      <td>{{ contrato.cliente }}</td>
       <td>{{ contrato.data }}</td>
       <td>{{ contrato.valor }}</td>
       <td>{{ contrato.ultimo_insert }}</td>

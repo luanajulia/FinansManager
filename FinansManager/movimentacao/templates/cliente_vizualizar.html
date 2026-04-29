@@ -43,39 +43,29 @@
     });
 </script>
    
-       {% block formulario %}
 
         <form method="POST" class="popup">
-            {{ form.csrf_token }}
-            {{ form.nome.label(class="form-label") }}
-            {{ form.nome(class="form-control") }}
-         
-            {{ form.cpf.label(class="form-label") }}
-            {{ form.cpf(class="form-control", id="cpf", required=True) }}
-         
-            {{ form.telefone.label(class="form-label") }}
-            {{ form.telefone(class="form-control", id="telefone") }}
-         
-            {{ form.endereco.label(class="form-label") }}
-            {{ form.endereco(class="form-control") }}
-          
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control") }}
-          
-            {{ form.data_nascimento.label(class="form-label") }}
-            {{ form.data_nascimento(class="form-control", type="date") }}
-
-            <label for="vendedor" class="form-label">Nome do Vendedor:</label>
-              <select id="vendedor" name="vendedor"  class="form-select" >
-                {% for usuario in usuarios %}
-                  <option  value="{{usuario.id}}">{{usuario.username}}</option>
-                {% endfor %}  
-              </select>
-            {{ form.botao_confirmacao(class="btn btn-success") }}
+            <label for="nome" class="form-label">Nome do Cliente:</label>
+            <input type="text" class="form-control" id="nome" name="nome" value="{{cliente.nome}}" readonly>
+            <label for="cpf" class="form-label">CPF do Cliente:</label>
+            <input type="text" class="form-control" id="cpf" name="cpf" value="{{cliente.cpf}}" readonly>
+            <label for="telefone" class="form-label">Telefone do Cliente:</label>
+            <input type="text" class="form-control" id="telefone" name="telefone" value="{{cliente.telefone}}" readonly>
+            <label for="endereco" class="form-label">Endereço do Cliente:</label>
+            <input type="text" class="form-control" id="endereco" name="endereco" value="{{cliente.endereco}}" readonly>
+            <label for="email" class="form-label">Email do Cliente:</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{cliente.email}}" readonly>
+            <label for="data_nascimento" class="form-label">Data de Nascimento:</label>
+            <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" value="{{cliente.data_nascimento}}" readonly>
+            <label for="nome_vendedor" class="form-label">Nome do Vendedor:</label>
             
+            {% for c, v in vendedores %}
+                {% if c.id == cliente.id %}
+                    <input type="text" class="form-control" id="nome_vendedor" name="nome_vendedor" value="{{v.username}}" readonly>
+                {% endif %}
+            {% endfor %}
 
         </form>
-          {% endblock %}
       </div>
     </div>
   </body>

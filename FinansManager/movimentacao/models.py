@@ -44,6 +44,7 @@ class Movimentacao(database.Model):
 class Contrato(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     id_cliente = database.Column(database.Integer, database.ForeignKey('cliente.id'), nullable=False)
+    id_contrato = database.Column(database.Integer, database.ForeignKey('pagamento.id'), nullable=False)
     data = database.Column(database.String, nullable=False)
     valor = database.Column(database.String)
     status = database.Column(database.String)

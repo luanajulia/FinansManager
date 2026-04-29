@@ -11,14 +11,19 @@
             {{ form.csrf_token }}
             {{ form.email.label(class="form-label") }}
             {{ form.email(class="form-control") }}
+            {% for error in form.email.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
             {{ form.username.label(class="form-label") }}
             {{ form.username(class="form-control") }}
+            {% for error in form.username.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
             {{ form.nivel.label(class="form-label") }}
             {{ form.nivel(class="form-control") }}
+            {% for error in form.nivel.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
             {{ form.senha.label(class="form-label") }}
             {{ form.senha(class="form-control") }}
+            {% for error in form.senha.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
             {{ form.confirmacao_senha.label(class="form-label") }}
             {{ form.confirmacao_senha(class="form-control") }}
+            {% for error in form.confirmacao_senha.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
             {{ form.botao_confirmacao(class="btn btn-primary") }}
           </div>
 

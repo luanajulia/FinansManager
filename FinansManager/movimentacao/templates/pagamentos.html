@@ -15,6 +15,7 @@
       <th scope="col">Parcelas</th>
       <th scope="col">Valor Parcela</th>
       <th scope="col">Comissão</th>
+      <th scope="col">Editar</th>
     </tr>
   </thead>
   <tbody>
@@ -26,6 +27,7 @@
       <td>{{ pag.parcelas }} x {{ pag.result_parcelas }}</td>
      
       <td>{{ pag.porcentagem_comissao }}% de {{ pag.valor }} = R$ {{ pag.valor_comissao }}</td>
+      <td><a href="{{ url_for('editar_pagamento', id=pag.id) }}" class="btn btn-primary">EDITAR</a></td>
     </tr>
     {% endfor %}
     

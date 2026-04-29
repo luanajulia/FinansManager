@@ -1,7 +1,7 @@
 # criar os formularios do nosso site
 from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, PasswordField, SubmitField, FileField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms import SelectField, StringField, PasswordField, SubmitField, FileField, IntegerField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, NumberRange
 from movimentacao.models import Usuario
 
 
@@ -44,8 +44,8 @@ class FormContrato(FlaskForm):
     botao_confirmacao = SubmitField("Criar Contrato")
 
 class FormPagamentos(FlaskForm):
-    valorTotal = StringField("Valor Total:", validators=[DataRequired()])
-    porcentagem = StringField("Taxa de Juros:", validators=[DataRequired()])
-    divisor = StringField("Número de Parcelas:", validators=[DataRequired()])
-    porcentagemComissao = StringField("Porcentagem Comissão:", validators=[DataRequired()])
+    valorTotal = IntegerField("Valor Total:", validators=[DataRequired(), NumberRange(min=1)])
+    porcentagem = IntegerField("Taxa de Juros:", validators=[DataRequired(), NumberRange(min=0, max=100)])
+    divisor = IntegerField("Número de Parcelas:", validators=[DataRequired(), NumberRange(min=1)])
+    porcentagemComissao = IntegerField("Porcentagem Comissão:", validators=[DataRequired(), NumberRange(min=0, max=100)])
     botao_confirmacao = SubmitField("Criar Condicao de Pagamento")

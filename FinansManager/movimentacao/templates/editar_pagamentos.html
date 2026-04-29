@@ -5,32 +5,30 @@
       {% endblock %}
 
 {% block body %}
-       {% block formulario %}
-
+{% for pagamento in pagamentos %}
         <form method="POST" class="popup">
-            {{ form.csrf_token }}
+            
             <label>Valor Total (R$):</label>
-            {{ form.valorTotal(class="form-control", id="valorTotal", type="number", placeholder="Valor total", oninput="calcular(); atualizarComissoes()") }}
+            <input value="{{ pagamento.valor }}" type="number" class="form-control" id="valorTotal" name="valorTotal" placeholder="Valor total" oninput="calcular(); atualizarComissoes()">
             <br>
             <label>Taxa de Juros Mensal (%):</label>
-            {{ form.porcentagem(class="form-control", id="porcentagem", type="number", min="0", max="1000", oninput="calcular()") }}
+            <input value="{{ pagamento.juros }}" type="number" class="form-control"  id="porcentagem" name="porcentagem" min="0" max="100" placeholder="0-100" oninput="calcular()"> 
             <br>
             <p>Resultado com juros: <span id="resultado">0</span></p>
             <label>Número de Parcelas:</label>
-            {{ form.divisor(class="form-control", id="divisor", type="number", value="2", placeholder="Digite o divisor", oninput="realizarCalculo(); atualizarComissoes()") }}
+            <input value="{{ pagamento.parcelas }}" type="number" class="form-control" id="divisor" name="divisor" placeholder="Digite o divisor" oninput="realizarCalculo(); atualizarComissoes()">
             <br>
             <p>Resultado das Parcelas: <span id="resultadodois"></span></p>
             <label>Porcentagem Comissão (%):</label>
-            {{ form.porcentagemComissao(class="form-control", id="porcentagemComissao", type="number", min="0", max="1000",  oninput="atualizarComissoes()") }}
+            <input value="{{ pagamento.porcentagem_comissao }}" type="number" class="form-control" id="porcentagemComissao" name="porcentagemComissao" min="0" max="100" placeholder="0-100" oninput="atualizarComissoes()">
             <br>
             <p>Resultado da Comissão: <span id="resultadoComissao">0</span></p>
-            <p>Resultado da Comissão p/ Mes: <span id="resultadoComissaomes">0</span></p>
-            {{ form.botao_confirmacao(class="btn btn-primary") }}
+            
+            <button type="submit" class="btn btn-primary">EDITAR</button>
+{% endfor %}
           
 
         </form>
-          {% endblock %}
-
         </div>
     </div>
   </body>
