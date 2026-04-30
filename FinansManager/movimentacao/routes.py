@@ -13,6 +13,7 @@ from datetime import datetime, date, timedelta, time
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 import json
+import math
 
 engine = create_engine('sqlite:///meubanco.db', poolclass=NullPool)
 
@@ -53,9 +54,9 @@ def criar_pagamento():
             parcelas = form_criarpagamento.divisor.data
             porcentagem_comissao = form_criarpagamento.porcentagemComissao.data
             
-            valor_juros = int(((juros/100)*valor)+valor)
-            result_parcelas = int((((juros/100)*valor)+valor) / parcelas)
-            valor_comissao = int((porcentagem_comissao/100)*valor)
+            valor_juros = int(math.ceil(((juros/100)*valor)+valor))
+            result_parcelas = int(math.ceil((((juros/100)*valor)+valor) / parcelas))
+            valor_comissao = int(math.ceil((porcentagem_comissao/100)*valor))
             
             pagamento = Pagamento(valor_juros=str(valor_juros),
                                   valor=str(valor),
@@ -92,11 +93,11 @@ def editar_pagamento(id):
                 flash("Número de parcelas não pode ser zero.", "error")
                 return redirect(url_for("editar_pagamento", id=id))
             
-            valor_juros = int(((juros_int / 100) * valor) + valor)
+            valor_juros = int(math.ceil(((juros_int / 100) * valor) + valor))
             juros = request.form.get("porcentagem")
-            result_parcelas = int((((juros_int / 100) * valor) + valor) / parcelas)
+            result_parcelas = int(math.ceil((((juros_int / 100) * valor) + valor) / parcelas))
             porcentagem_comissao_str = request.form.get("porcentagemComissao")
-            valor_comissao = int((porcentagem_comissao / 100) * valor)
+            valor_comissao = int(math.ceil((porcentagem_comissao / 100) * valor))
             
             conn.execute("UPDATE pagamento SET valor_juros = ?, valor = ?, juros = ?, parcelas = ?, result_parcelas = ?, porcentagem_comissao = ?, valor_comissao = ? WHERE id = ?", 
                          (str(valor_juros), str(valor), str(juros), str(parcelas), str(result_parcelas), str(porcentagem_comissao_str), str(valor_comissao), str(id)))
@@ -152,40 +153,51 @@ def criarcontrato():
     user = Usuario.query.get(int(current_user.id))
     usuarios = Cliente.query.order_by(Cliente.nome).all()
     if request.method == "POST":
-        condioes = Pagamento.query.filter(Pagamento.id == request.form.get("condicao")).all()
-        valor=condioes[0].valor_juros
-        juros=condioes[0].juros
-        parcelas=condioes[0].result_parcelas
-        frequencia=condioes[0].parcelas
+        condicao_id = request.form.get("condicao")
+        if not condicao_id or condicao_id == "Selecionar Condição":
+            flash("Selecione uma condição de pagamento válida.", "error")
+            return redirect(url_for("criarcontrato"))
+
+        condicao = Pagamento.query.get(int(condicao_id))
+        if not condicao:
+            flash("Condição de pagamento não encontrada.", "error")
+            return redirect(url_for("criarcontrato"))
+
+        valor = float(condicao.valor_juros)
+        juros = condicao.juros
+        parcelas = condicao.result_parcelas
+        frequencia = condicao.parcelas
+        valor = math.ceil(valor)
         contrato = Contrato(data=datetime.now().strftime('%d/%m/%Y %H:%M'),
-                            valor=valor,
-                            saldo=valor,
+                            valor=str(int(valor)),
+                            saldo=str(int(valor)),
                             juros=juros,
                             frequencia=frequencia,
                             status="Ativo",
                             ultimo_insert="Sem movimentação",
                             id_cliente=request.form.get("cliente"),
-                            parcelas=parcelas,
-                            id_contrato=request.form.get("condicao"),
+                            parcelas=str(int(math.ceil(float(parcelas)))),
+                            id_contrato=int(condicao_id),
                             pagamento=request.form.get("frequencia"))
         database.session.add(contrato)
         database.session.commit()
-        cursor.execute("UPDATE CLIENTE SET saldo = saldo-'"+str(valor)+"' WHERE id = '"+request.form.get("cliente")+"'")
         clientes = cursor.execute("SELECT * FROM CLIENTE where id = '"+request.form.get("cliente")+"'").fetchall()
-        contrato=cursor.execute("SELECT * FROM CONTRATO where id_cliente = '"+request.form.get("cliente")+"' order by id desc limit 1").fetchall()
         for c in clientes:
             id_cliente = c[0]
-            saldo = c[4]
-            valor_pago=valor
+            saldo_atual = float(c[4]) if c[4] else 0.0
+            valor_pago = valor
+            if saldo_atual == valor_pago:
+                # Saldo primário, não subtrair
+                ultimo_saldo = str(saldo_atual)
+            else:
+                # Subtrair do saldo
+                cursor.execute("UPDATE CLIENTE SET saldo = saldo-'"+str(valor)+"' WHERE id = '"+request.form.get("cliente")+"'")
+                ultimo_saldo = str(saldo_atual - valor_pago)
+            contrato = cursor.execute("SELECT * FROM CONTRATO where id_cliente = '"+request.form.get("cliente")+"' order by id desc limit 1").fetchall()
             for co in contrato:
                 id_contrato = co[0]
-                if saldo == valor_pago:
-                    cursor.execute("INSERT INTO MOVIMENTACAO (id_cliente, data, valor_emprestado, usuario_insert, obs, ultimo_saldo, id_contrato) VALUES ('"+str(request.form.get("cliente"))+"', '"+datetime.now().strftime('%d/%m/%Y %H:%M')+"', '"+str(valor_pago)+"', '"+str(current_user.id)+"', 'Contrato Valor pego', '-'"+str(valor_pago)+"', '"+str(id_contrato)+"')")
-                    conn.commit()
-                    return redirect(url_for("contratos"))
-                else:
-                    cursor.execute("INSERT INTO MOVIMENTACAO (id_cliente, data, valor_emprestado, usuario_insert, obs, ultimo_saldo, id_contrato) VALUES ('"+str(request.form.get("cliente"))+"', '"+datetime.now().strftime('%d/%m/%Y %H:%M')+"', '"+str(valor_pago)+"', '"+str(current_user.id)+"', 'Contrato Valor pego', '"+str(saldo)+"'-'"+str(valor_pago)+"', '"+str(id_contrato)+"')")
-                    conn.commit()
+                cursor.execute("INSERT INTO MOVIMENTACAO (id_cliente, data, valor_emprestado, usuario_insert, obs, ultimo_saldo, id_contrato) VALUES ('"+str(request.form.get("cliente"))+"', '"+datetime.now().strftime('%d/%m/%Y %H:%M')+"', '"+str(valor_pago)+"', '"+str(current_user.id)+"', 'Contrato Valor pego', '"+ultimo_saldo+"', '"+str(condicao.id)+"')")
+                conn.commit()
                 return redirect(url_for("contratos"))
     return render_template("criarcontrato.html", form=form_criarcontrato, usuarios=usuarios, user=user, pagamentos=pagamentos)
 
@@ -544,5 +556,70 @@ def grafico():
         cliente_s.append(nome if nome is not None else "Sem Nome")
 
     return render_template("grafico.html", total_saldo=total_saldo, user=user, graf=graf, depart=depart, usuarios_data=usuarios_data, saldos=saldos, saldo_c=saldo_c, cliente_s=cliente_s)
+
+@app.route("/relatorio")
+@login_required
+def relatorio():
+    rel="rel"
+    user = Usuario.query.get(int(current_user.id))
+    vendedores = Usuario.query.order_by(Usuario.id).all()
+    niveis = cursor.execute("SELECT DISTINCT nivel FROM usuario").fetchall()
+    return render_template("relatorio.html", vendedores=vendedores, rel=rel, user=user, niveis=niveis)
+
+@app.route("/relatorio_pesquisa", methods=['GET', "POST"])
+@login_required
+def relatorio_pesquisa():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        session['username'] = username
+    username = session['username']
+    rel="rel"
+    user = Usuario.query.get(int(current_user.id))
+    niveis = cursor.execute("SELECT DISTINCT nivel FROM usuario").fetchall()
+
+    vendedores = Usuario.query.order_by(Usuario.id).all()
+    if username != "":
+        vendedores = Usuario.query.filter(Usuario.id == username).all()
+    
+    return render_template("relatorio.html", vendedores=vendedores, rel=rel, user=user, niveis=niveis)
+
+@app.route("/relatorio_movimentacao_pesquisa/<string:id>",methods=['GET', "POST"])
+@login_required
+def relatorio_movimentacao_pesquisa(id):
+    if request.method == 'POST':
+        data_inicial = request.form.get('data_inicial')
+        data_final = request.form.get('data_final')
+        session['data_inicial'] = data_inicial
+        session['data_final'] = data_final
+    data_inicial = session['data_inicial']
+    data_final = session['data_final']
+    rel="rel"
+    data_ini = datetime.strptime(data_inicial, '%Y-%m-%d').strftime('%d/%m/%Y')
+    data_fin = datetime.strptime(data_final, '%Y-%m-%d').strftime('%d/%m/%Y')
+    user = Usuario.query.get(int(current_user.id))
+    vendedor = Usuario.query.get(int(id))
+
+    clientes = Cliente.query.order_by(Cliente.nome).all()
+    datas = cursor.execute("select DISTINCT SUBSTR(movimentacao.data, 0, 11) as data_movi FROM movimentacao ").fetchall()
+    movimentacoes = cursor.execute(f"""SELECT *, c.saldo, u.username,  concat(con.frequencia, ' x ', 'R$',p.valor_comissao / con.frequencia) as divisao, movimentacao.id as move, movimentacao.data as data_lancamento FROM Movimentacao 
+        LEFT JOIN Cliente as c ON  c.id = Movimentacao.id_cliente
+        LEFT JOIN Usuario as u ON  u.id = Movimentacao.usuario_insert
+        LEFT JOIN pagamento as p on Movimentacao.id_contrato = p.id
+        LEFT JOIN contrato as con on movimentacao.id_contrato = con.id where SUBSTR(movimentacao.data, 0, 11) >= '{data_ini}' and SUBSTR(movimentacao.data, 0, 11) <= '{data_fin}' and id_vendedor = '{id}' """).fetchall()
+    total_saida = cursor.execute(f"""SELECT sum(valor_emprestado) as total FROM Movimentacao 
+                                        LEFT JOIN Cliente as c ON  c.id = Movimentacao.id_cliente
+                                        LEFT JOIN Usuario as u ON  u.id = Movimentacao.usuario_insert
+                                        LEFT JOIN pagamento as p on Movimentacao.id_contrato = p.id
+                                        LEFT JOIN contrato as con on movimentacao.id_contrato = con.id
+                                        where SUBSTR(movimentacao.data, 0, 11) >= '{data_ini}' and SUBSTR(movimentacao.data, 0, 11) <= '{data_fin}' and id_vendedor = '{id}';
+                                        """).fetchall()
+    total_recebido = cursor.execute(f"""SELECT sum(p.valor_comissao) as total FROM Movimentacao 
+                                        LEFT JOIN Cliente as c ON  c.id = Movimentacao.id_cliente
+                                        LEFT JOIN Usuario as u ON  u.id = Movimentacao.usuario_insert
+                                        LEFT JOIN pagamento as p on Movimentacao.id_contrato = p.id
+                                        LEFT JOIN contrato as con on movimentacao.id_contrato = con.id
+                                        where SUBSTR(movimentacao.data, 0, 11) >= '{data_ini}' and SUBSTR(movimentacao.data, 0, 11) <= '{data_fin}' and id_vendedor = '{id}';""").fetchall()
+    return render_template("movimentacoes_relatorio.html", vendedor=vendedor, movimentacoes=movimentacoes, rel=rel, datas=datas,  user=user, total_saida=total_saida,total_recebido=total_recebido, clientes=clientes, data_ini=data_ini, data_fin=data_fin)
+
 
 engine.dispose()

@@ -112,6 +112,13 @@
                     <a href="{{ url_for('contratos') }}"  class="nav-link" ><ion-icon name="document-outline"></ion-icon> CONTRATOS </a>
                     {% endif %}
                 </li>
+                <li>
+                    {% if rel=="rel" %}
+                    <a href="{{ url_for('relatorio') }}"  class="nav-link active" ><ion-icon name="book-outline"></ion-icon> RELATÓRIO </a>
+                    {% else %}
+                    <a href="{{ url_for('relatorio') }}"  class="nav-link" ><ion-icon name="book-outline"></ion-icon> RELATÓRIO </a>
+                    {% endif %}
+                </li>
             </ul>
             {% elif user.nivel == 'Vendedor'  %}
         <ul class="nav nav-pills flex-column mb-auto">
@@ -204,6 +211,7 @@
                 {% endif %}
                 </li>
                 
+                
             <li>
                 {% if contr == "contr" %}
                 <a href="{{ url_for('contratos') }}"  class="nav-link active" ><ion-icon name="document-outline"></ion-icon> CONTRATOS </a>
@@ -211,6 +219,13 @@
                 <a href="{{ url_for('contratos') }}"  class="nav-link" ><ion-icon name="document-outline"></ion-icon> CONTRATOS </a>
                 {% endif %}
             </li>
+            <li>
+                    {% if rel=="rel" %}
+                    <a href="{{ url_for('relatorio') }}"  class="nav-link active" ><ion-icon name="book-outline"></ion-icon> RELATÓRIO </a>
+                    {% else %}
+                    <a href="{{ url_for('relatorio') }}"  class="nav-link" ><ion-icon name="book-outline"></ion-icon> RELATÓRIO </a>
+                    {% endif %}
+                </li>
             <li>
                 {% if qui == "qui" %}
                 <a href="{{ url_for('quitado') }}"  class="nav-link active" ><ion-icon name="checkmark-outline"></ion-icon> QUITADOS </a>

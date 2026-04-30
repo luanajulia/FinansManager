@@ -1,0 +1,67 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="PERSON-outline"></ion-icon>
+      RELATÓRIO VENDEDORES
+      {% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready(function() {
+        $('#username').select2();
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+        $('#nivel').select2();
+    });
+  </script>
+<a href="{{ url_for('criar_vendedor') }}" class="btn btn-success">CRIAR USUARIO</a>
+  <form method="post" action="{{url_for("relatorio_pesquisa")}}">
+  <div style="display: ruby-text;">
+  <div>
+  <label for="vendedor" class="form-label">VENDEDOR</label>
+  <br>
+  <select type="text"  id="username" name="username"  >
+        {% if vendedor %}
+        <option selected value="{{vendedor.id}}">{{vendedor.username}}</option>
+        {% else %}
+        <option  value="">Todos</option>
+        {% endif %}
+        {% for vendedor in vendedores  %}
+            <option  value="{{vendedor.id}}">{{vendedor.username}}</option>
+          {% endfor %}
+      </select>
+      </div>
+      
+      
+
+    <button type="submit" class="btn btn-primary">PESQUISAR</button>
+    </div>
+</form>
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Formulario</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in vendedores %}
+    <tr>
+      <th scope="row">{{ cliente.username }}</th>
+      <td>{{ cliente.nivel }}</td>
+      <td ><form method="post" action="{{url_for("relatorio_movimentacao_pesquisa", id=cliente.id)}}">
+        <input type="date" name="data_inicial" placeholder="Data Inicial"> às
+        <input type="date" name="data_final" placeholder="Data Final">
+        <button type="submit" class="btn btn-primary">PESQUISAR</button>
+      </form></td>
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+  </body>
+
+{% endblock %}

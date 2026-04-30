@@ -1,0 +1,61 @@
+{% extends "navbar.html" %}
+ {% block titlle %}
+      <ion-icon name="cash-outline"></ion-icon>
+      RELATÓRIO DE COMISSÕES
+      {% endblock %}
+{% block body %}
+<h4>Pagemento Programado<h4>
+<h6>Vendedor: {{vendedor.username}}</h6>
+
+<table class="table table-bordered">
+ <thead>
+    <tr>
+      <th scope="col">Periodo</th>
+      <th scope="col">{{ data_ini }} a {{ data_fin }}</th>
+    </tr>
+  </thead>
+  
+</table>
+<h4>Comissao Selecionadas</h4>
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-active">
+      <th scope="col">N° de Vendas</th>
+      <th scope="col">Data</th>
+      <th scope="col">Cliente</th>
+      <th scope="col">Valor Emprestimo</th>
+      <th scope="col">Valor da Comissao</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for movimentacao in movimentacoes %}
+    <tr>
+      <th scope="row">{{ movimentacao.move }}</th>
+      <td>{{ movimentacao.data_lancamento }}</td>
+      <td>{{movimentacao.nome}}</td>
+      <td>R$ {{movimentacao.valor_emprestado}}</td>
+      <td>R$ {{movimentacao.valor_comissao}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  
+</table>
+ <table class="table">
+  <thead style="color: #fff;background-color: #212529;border-color: #32383e;">
+    <tr>
+      <th scope="col">Total de Emprestimos</th>
+      <th scope="col">Total de Comissões</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      
+      <td>{% for total in total_saida  %}{{total.total}} {% endfor %}</td>
+      <td>{% for total in total_recebido %}{{total.total}} {% endfor %}</td>
+    </tr>
+    </tbody>
+</table>
+
+  </body>
+
+{% endblock %}

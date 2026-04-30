@@ -39,7 +39,7 @@
     const p = parseFloat(document.getElementById('porcentagem').value) || 0;
     const v = parseFloat(document.getElementById('valorTotal').value) || 0;
     const res = ((p / 100) * v) + v;
-    const inteiro = Math.round(res);
+    const inteiro = Math.ceil(res);
     document.getElementById('resultado').innerText = inteiro;
     return inteiro;
   }
@@ -50,7 +50,7 @@
     const valorParaDividir = calcular();
 
     if (divisor !== 0) {
-        const resultado = Math.round(valorParaDividir / divisor);
+        const resultado = Math.ceil(valorParaDividir / divisor);
         document.getElementById('resultadodois').innerText = resultado;
         return resultado;
     } else {
@@ -63,7 +63,7 @@
     const p = parseFloat(document.getElementById('porcentagemComissao').value) || 0;
     const v = parseFloat(document.getElementById('valorTotal').value) || 0;
     const res = (p / 100) * v;
-    const inteiro = Math.round(res);
+    const inteiro = Math.ceil(res);
     document.getElementById('resultadoComissao').innerText = inteiro;
     return inteiro;
   }
@@ -74,7 +74,7 @@
     const divisor = Number(document.getElementById('divisor').value) || 1;
     const comissaoTotal = (p / 100) * v;
     const mensal = divisor !== 0 ? comissaoTotal / divisor : 0;
-    const inteiro = Math.round(mensal);
+    const inteiro = Math.ceil(mensal);
     document.getElementById('resultadoComissaomes').innerText = inteiro;
     return inteiro;
   }
